@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using WFConFin.Models;
 
 namespace WFConFin.Controllers
 {
@@ -6,6 +7,21 @@ namespace WFConFin.Controllers
     [Route("[controller]")]
     public class HomeController : Controller
     {
+        private static List<Estado> listaEstados = new List<Estado>();
+
+        [HttpGet("estado")]
+        public IActionResult GetEstado()
+        {
+            return Ok(listaEstados);
+        }
+
+        [HttpPost("estado")]
+        public IActionResult PostEstado([FromBody] Estado estado)
+        {
+            listaEstados.Add(estado);
+            return Ok("Estado Cadastrado");
+        }
+
         [HttpGet]
         public IActionResult GetInformacao()
         {
