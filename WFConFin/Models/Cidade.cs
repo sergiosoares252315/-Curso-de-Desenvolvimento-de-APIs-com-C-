@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace WFConFin.Models;
 
@@ -22,5 +23,7 @@ public class Cidade
     }
 
     //Relacionamento Entity Framework
+    // JsonIgnore para não trazer o resultado nulo!
+    [JsonIgnore]
     public Estado Estado { get; set; }
 }
