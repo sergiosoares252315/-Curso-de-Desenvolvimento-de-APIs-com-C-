@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WFConFin.Data;
@@ -20,13 +21,14 @@ namespace WFConFin.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetCidades()
+        public async Task<IActionResult> GetCidades()
         {
             try
             {
                 // Se fosse adicionar o campo estado, a variavél deveria reseber a consulta abaixo!
                 //var result = _context.Cidade.Include(x => x.Estado).ToList();
-                var result = _context.Cidade.ToList();
+                //No curso este metodo não ficou assíncrono
+                var result = await _context.Cidade.ToListAsync();
                 return Ok(result);
             }
             catch (Exception e)
@@ -36,12 +38,12 @@ namespace WFConFin.Controllers
         }
 
         [HttpPost]
-        public IActionResult PostCidade([FromBody] Cidade cidade)
+        public async Task<IActionResult> PostCidade([FromBody] Cidade cidade)
         {
             try
             {
-                _context.Cidade.Add(cidade);
-                int valor = _context.SaveChanges();
+                await _context.Cidade.AddAsync(cidade);
+                int valor = await _context.SaveChangesAsync();
 
                 if (valor == 1)
                 {
@@ -60,12 +62,12 @@ namespace WFConFin.Controllers
         }
 
         [HttpPut]
-        public IActionResult PutCidade([FromBody] Cidade cidade)
+        public async Task<IActionResult> PutCidade([FromBody] Cidade cidade)
         {
             try
             {
                 _context.Cidade.Update(cidade);
-                int valor = _context.SaveChanges();
+                int valor = await _context.SaveChangesAsync();
 
                 if (valor == 1)
                 {
@@ -84,16 +86,16 @@ namespace WFConFin.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteCidade([FromRoute] Guid id)
+        public async Task<IActionResult> DeleteCidade([FromRoute] Guid id)
         {
             try
             {
-                Cidade cidade = _context.Cidade.Find(id);
+                Cidade cidade = await _context.Cidade.FindAsync(id);
 
                 if (cidade != null)
                 {
                     _context.Cidade.Remove(cidade);
-                    int valor = _context.SaveChanges();
+                    int valor = await _context.SaveChangesAsync();
                     if (valor == 1)
                     {
                         return Ok("Sucesso, cidade excluída.");
@@ -115,11 +117,11 @@ namespace WFConFin.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetCidade([FromRoute] Guid id)
+        public async Task<IActionResult> GetCidade([FromRoute] Guid id)
         {
             try
             {
-                Cidade cidade = _context.Cidade.Find(id);
+                Cidade cidade = await _context.Cidade.FindAsync(id);
 
                 if (cidade != null)
                 {
@@ -137,12 +139,13 @@ namespace WFConFin.Controllers
         }
 
         [HttpGet("Pesquisa")]
-        public IActionResult GetCidadePesquisa([FromQuery] string valor)
+        public async Task<IActionResult> GetCidadePesquisa([FromQuery] string valor)
         {
             try
             {
                 //Query Criteria!
-                var lista = from x in _context.Cidade.ToList()
+                //No curso este metodo não ficou assíncrono
+                var lista = from x in await _context.Cidade.ToListAsync()
                             where x.Nome.ToUpper().Contains(valor.ToUpper())
                             || x.EstadoSigla.ToUpper().Contains(valor.ToUpper())
                             select x;
@@ -157,12 +160,13 @@ namespace WFConFin.Controllers
         }
 
         [HttpGet("Paginacao")]
-        public IActionResult GetCidadePaginacao([FromQuery] string valor, int skip, int take, bool ordemDesc)
+        public async Task<IActionResult> GetCidadePaginacao([FromQuery] string valor, int skip, int take, bool ordemDesc)
         {
             try
             {
                 //Query Criteria
-                var lista = from x in _context.Cidade.ToList()
+                //No curso este metodo não ficou assíncrono
+                var lista = from x in await _context.Cidade.ToListAsync()
                             where x.Nome.ToUpper().Contains(valor.ToUpper())
                             || x.EstadoSigla.ToUpper().Contains(valor.ToUpper())
                             select x;
