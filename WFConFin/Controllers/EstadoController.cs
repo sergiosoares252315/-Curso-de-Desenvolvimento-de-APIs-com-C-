@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WFConFin.Data;
@@ -11,6 +12,7 @@ namespace WFConFin.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class EstadoController : Controller
     {
         private readonly WFConFinDbContext _context;
@@ -36,6 +38,7 @@ namespace WFConFin.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Gerente,Empregado")]
         public async Task<IActionResult> PostEstado([FromBody] Estado estado)
         {
             try
@@ -59,6 +62,7 @@ namespace WFConFin.Controllers
 
 
         [HttpPut]
+        [Authorize(Roles = "Gerente,Empregado")]
         public async Task<IActionResult> PutEstado([FromBody] Estado estado)
         {
             try
@@ -82,6 +86,7 @@ namespace WFConFin.Controllers
 
 
         [HttpDelete("{sigla}")]
+        [Authorize(Roles = "Gerente")]
         public async Task<IActionResult> DeleteEstado([FromRoute] string sigla)
         {
             try
@@ -199,7 +204,7 @@ namespace WFConFin.Controllers
                 lista = lista.Skip(skip).Take(take).ToList();
 
                 var paginacaoResponse = new PaginacaoResponse<Estado>(lista, qtde, skip, take);
-                
+
                 return Ok(paginacaoResponse);
             }
             catch (Exception e)
